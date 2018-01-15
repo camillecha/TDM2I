@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<cep xmlns="http://camitk.imag.fr/cepcoreschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camitk.imag.fr/cepcoreschema Cep.xsd">
+  <name>TDM2I</name>
+  <contact>
+    <email>camille.chadenat@univ-grenoble-alpes.fr</email>
+  </contact>
+  <description>Brainshift navigator</description>
+  <actionExtensions>
+    <actionExtension>
+      <name>actionTDM2I</name>
+      <description>differentes methodes pour la realisation des differents affichage des objets en 3D et 2D.</description>
+      <actions>
+        <action>
+          <name>deplacement3D</name>
+          <description>permet d'afficher en 3D sur le maillage su cerveau l'outil</description>
+          <component>Component3D</component>
+          <classification>
+            <family>TDM2I family</family>
+          </classification>
+          <parameters>
+            <parameter defaultValue="0" description="translation x" editable="true" name="tx" type="int" unit=""/>
+            <parameter defaultValue="0" description="translation y" editable="true" name="ty" type="int" unit=""/>
+            <parameter defaultValue="0" description="translation z" editable="true" name="tz" type="int" unit=""/>
+            <parameter defaultValue="0" description="rotation x " editable="true" name="rx" type="int" unit=""/>
+            <parameter defaultValue="0" description="rotation y" editable="true" name="ry" type="int" unit=""/>
+            <parameter defaultValue="0" description="rotation z" editable="true" name="rz" type="int" unit=""/>
+          </parameters>
+        </action>
+        <action>
+          <name>affichage2D</name>
+          <description>affichage de l'outil sur les coupes 2D</description>
+          <component>Component2D</component>
+          <classification>
+            <family>TDM2I Family</family>
+          </classification>
+          <parameters>
+            <parameter defaultValue="0" description="coordonnee en x" editable="true" name="x" type="int" unit=""/>
+            <parameter defaultValue="0" description="coordonnee en y" editable="true" name="y" type="int" unit=""/>
+            <parameter defaultValue="0" description="coordonnee en z" editable="true" name="z" type="int" unit=""/>
+          </parameters>
+        </action>
+        <action>
+          <name>superpositionimage3D</name>
+          <description>permet de superposer le maillage de l'objet et du cerveau.</description>
+          <component>Component3D</component>
+          <classification>
+            <family>TDM2I Family</family>
+          </classification>
+          <parameters>
+            <parameter defaultValue="0.0" description="maillage du cerveau " editable="true" name="cerveau" type="double" unit=""/>
+            <parameter defaultValue="0.0" description="maillage de l'outil " editable="true" name="outil" type="double" unit=""/>
+          </parameters>
+        </action>
+      </actions>
+      <dependencies>
+        <dependency name="librarytdm2i" type="cepLibrary"/>
+        <dependency name="image3d" type="component"/>
+      </dependencies>
+    </actionExtension>
+  </actionExtensions>
+  <componentExtensions>
+    <componentExtension>
+      <name>Image3D</name>
+      <description>Coordonnees de point permettant l'affichage en 3D. </description>
+      <components>
+        <component>
+          <name>component3D</name>
+          <description>composant de type 3D (3 premieres coordonnees pour translation et 3 dernieres pour rotation)</description>
+          <representation>Image</representation>
+          <properties>
+            <parameter defaultValue="null" description="Coordonnee en 3D de l'objet a afficher sur l'image IRM" editable="true" name="objet3d" type="QString" unit=""/>
+          </properties>
+          <fileSuffix>polo</fileSuffix>
+        </component>
+        <component>
+          <name>component2D</name>
+          <description>Coordonnee de l'objet pour l'affichage 2D</description>
+          <representation>Image</representation>
+          <properties>
+            <parameter defaultValue="null" description="coordonnee de l'objet en 2D pour l'affichage sur les differentes coupes" editable="true" name="objet2D" type="QString" unit=""/>
+          </properties>
+          <fileSuffix>polo</fileSuffix>
+        </component>
+      </components>
+      <dependencies>
+        <dependency name="librarytdm2i" type="cepLibrary"/>
+      </dependencies>
+    </componentExtension>
+  </componentExtensions>
+  <libraries>
+    <library static="true">
+      <name>LibraryTDM2I</name>
+      <description>Brainshift Navigator librairie </description>
+    </library>
+  </libraries>
+</cep>
