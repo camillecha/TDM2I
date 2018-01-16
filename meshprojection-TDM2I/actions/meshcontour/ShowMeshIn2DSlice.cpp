@@ -102,6 +102,7 @@ QWidget* ShowMeshIn2DSlice::getWidget() {
         else {
             if (!inputImage && dynamic_cast<ImageComponent*>(inputComponent)) {
                 inputImage = dynamic_cast<ImageComponent*>(inputComponent);
+                inputImage->setTransformTranslation(-80,130,1160);
             }
         }
     }
@@ -262,9 +263,10 @@ void ShowMeshIn2DSlice::toggleShowContour() {
         //-- create the cutting planes
         cuttingPlaneMap.insert(Slice::AXIAL, getNewPlane(Slice::AXIAL));
         // TODO
+        cuttingPlaneMap.insert(Slice::SAGITTAL, getNewPlane(Slice::SAGITTAL));
         
         // TODO
-        
+        cuttingPlaneMap.insert(Slice::CORONAL, getNewPlane(Slice::CORONAL));
 
         //-- set the position of the plane depending on the current slice
         updateCuttingPlane();
@@ -420,9 +422,15 @@ void ShowMeshIn2DSlice::updateCuttingPlane(Slice::SliceOrientation orientation) 
     switch(orientation) {
     case Slice::SAGITTAL:
         // TODO
+    //default:
+        orientationSlices = targetImage->getSagittalSlices();
+        break;
         
     case Slice::CORONAL:
         // TODO
+    //default:
+        orientationSlices = targetImage->getCoronalSlices();
+       break;
         
     case Slice::AXIAL:
     default:
@@ -447,8 +455,10 @@ void ShowMeshIn2DSlice::updateCuttingPlane() {
         // -- update all orientation planes
         updateCuttingPlane(Slice::AXIAL);
         // TODO
+        updateCuttingPlane(Slice::SAGITTAL);
         
         // TODO
+        updateCuttingPlane(Slice::CORONAL);
         
     }
 }
@@ -458,9 +468,13 @@ InteractiveViewer* ShowMeshIn2DSlice::getViewer(Slice::SliceOrientation orientat
     switch(orientation) {
     case Slice::SAGITTAL:
         // TODO
+        return InteractiveViewer::getSagittalViewer();
+        break;
         
     case Slice::CORONAL:
         // TODO
+        return InteractiveViewer::getCoronalViewer();
+        break;
         
     case Slice::AXIAL:
         return InteractiveViewer::getAxialViewer();
