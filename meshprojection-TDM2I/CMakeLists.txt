@@ -15,8 +15,8 @@ include(CTest)
 enable_testing()
 
 # to create specific target: camitk-test-coverage
-option(CAMITK_TEST_COVERAGE "Code coverage" OFF)
-include(macros/camitk/test/CamiTKTestCoverage)
+#option(CAMITK_TEST_COVERAGE "Code coverage" OFF)
+#include(macros/camitk/test/CamiTKTestCoverage)
 
 # define the CEP
 camitk_extension_project(NAME "Mesh Projection" 
