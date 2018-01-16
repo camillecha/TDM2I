@@ -2,7 +2,7 @@
  * $CAMITK_LICENCE_BEGIN$
  *
  * CamiTK - Computer Assisted Medical Intervention ToolKit
- * (c) 2001-2017 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
+ * (c) 2001-2016 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
  *
  * Visit http://camitk.imag.fr for more information
  *
@@ -24,37 +24,14 @@
  ****************************************************************************/
 
 
-#ifndef SUPERPOSITIONIMAGE3D_H
-#define SUPERPOSITIONIMAGE3D_H
+#include "MeshContour.h"
 
-#include <Action.h>
+// include generated actions headers
+#include "ShowMeshIn2DSlice.h"
 
-#include <Component3D.h>
-
-class Superpositionimage3D : public camitk::Action {
-
-public: 
-
-    /// Default Constructor 
-    Superpositionimage3D(camitk::ActionExtension *);
-
-    /// Default Destructor
-    virtual ~Superpositionimage3D();
-
-public slots:
-    /** this method is automatically called when the action is triggered.
-      * Call getTargets() method to get the list of components to use.
-      * \note getTargets() is automatically filtered so that it only contains compatible components, 
-      * i.e., instances of Superpositionimage3D (or a subclass).
-      */
-    virtual ApplyStatus apply();
-
-private: 
-    /// helper method to simplify the target component processing
-    virtual void process(Component3D *);
-
-
-}; 
-
-#endif // SUPERPOSITIONIMAGE3D_H
+// --------------- getActions -------------------
+void MeshContour::init() {
+    // Creating and registering the instance of ShowMeshIn2DSlice
+    registerNewAction(ShowMeshIn2DSlice);
+}
 
