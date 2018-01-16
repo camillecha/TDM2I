@@ -2,7 +2,7 @@
  * $CAMITK_LICENCE_BEGIN$
  *
  * CamiTK - Computer Assisted Medical Intervention ToolKit
- * (c) 2001-2017 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
+ * (c) 2001-2016 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
  *
  * Visit http://camitk.imag.fr for more information
  *
@@ -24,37 +24,38 @@
  ****************************************************************************/
 
 
-#ifndef SUPERPOSITIONIMAGE3D_H
-#define SUPERPOSITIONIMAGE3D_H
+#ifndef MESHCONTOUR_H
+#define MESHCONTOUR_H
 
-#include <Action.h>
+#include <ActionExtension.h>
 
-#include <Component3D.h>
+class MeshContour : public camitk::ActionExtension {
+    Q_OBJECT
+    Q_INTERFACES(camitk::ActionExtension);
+    Q_PLUGIN_METADATA(IID "fr.imag.camitk.wizardgenerated.action.MeshContour")
 
-class Superpositionimage3D : public camitk::Action {
+public:
+    /// Constructor
+    MeshContour() : ActionExtension() {};
 
-public: 
+    /// Destructor
+    virtual ~MeshContour() {};
 
-    /// Default Constructor 
-    Superpositionimage3D(camitk::ActionExtension *);
+    /// Method returning the action extension name
+    virtual QString getName() {
+        return "Mesh Contour";
+    };
 
-    /// Default Destructor
-    virtual ~Superpositionimage3D();
+    /// Method returning the action extension descrption
+    virtual QString getDescription() {
+        return "Show the contour of the mesh in a given orientation slice";
+    };
 
-public slots:
-    /** this method is automatically called when the action is triggered.
-      * Call getTargets() method to get the list of components to use.
-      * \note getTargets() is automatically filtered so that it only contains compatible components, 
-      * i.e., instances of Superpositionimage3D (or a subclass).
-      */
-    virtual ApplyStatus apply();
+    /// initialize all the actions
+    virtual void init();
 
-private: 
-    /// helper method to simplify the target component processing
-    virtual void process(Component3D *);
+};
 
+#endif // MESHCONTOUR_H
 
-}; 
-
-#endif // SUPERPOSITIONIMAGE3D_H
 

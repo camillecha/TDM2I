@@ -29,7 +29,7 @@
 # $CAMITK_LICENCE_BEGIN$
 # 
 # CamiTK - Computer Assisted Medical Intervention ToolKit
-# (c) 2001-2017 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
+# (c) 2001-2016 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
 # 
 # Visit http://camitk.imag.fr for more information
 # 

@@ -2,7 +2,7 @@
  * $CAMITK_LICENCE_BEGIN$
  *
  * CamiTK - Computer Assisted Medical Intervention ToolKit
- * (c) 2001-2017 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
+ * (c) 2001-2016 Univ. Grenoble Alpes, CNRS, TIMC-IMAG UMR 5525 (GMCAO)
  *
  * Visit http://camitk.imag.fr for more information
  *
@@ -24,25 +24,14 @@
  ****************************************************************************/
 
 
-#ifndef COMPONENT2D_H
-#define COMPONENT2D_H
+#include "MeshContour.h"
 
-#include <QObject>
+// include generated actions headers
+#include "ShowMeshIn2DSlice.h"
 
-#include <ImageComponent.h>
-
-class Component2D : public camitk::ImageComponent {
-
-    Q_OBJECT
-
-public:
-    /// Default Constructor
-    Component2D(const QString & file) throw(camitk::AbortException);
-
-    /// Default Destructor
-    virtual ~Component2D();
-
-};
-
-#endif // COMPONENT2D_H
+// --------------- getActions -------------------
+void MeshContour::init() {
+    // Creating and registering the instance of ShowMeshIn2DSlice
+    registerNewAction(ShowMeshIn2DSlice);
+}
 

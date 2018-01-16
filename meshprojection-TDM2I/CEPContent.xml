@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<cep xmlns="http://camitk.imag.fr/cepcoreschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camitk.imag.fr/cepcoreschema Cep.xsd">
+  <name>Mesh Projection</name>
+  <contact>
+    <email>Emmanuel.Promayon@imag.fr</email>
+  </contact>
+  <description>Mesh projection on 2D slices</description>
+  <actionExtensions>
+    <actionExtension>
+      <name>Mesh Contour</name>
+      <description>Show the contour of the mesh in a given orientation slice</description>
+      <actions>
+        <action>
+          <name>Show Mesh in 2D Slice</name>
+          <description>Project the mesh in the 2D slice viewer</description>
+          <component>MeshComponent</component>
+          <classification>
+            <family>TDM2I</family>
+            <tag>Projection</tag>
+            <tag>Contour</tag>
+          </classification>
+        </action>
+      </actions>
+    </actionExtension>
+  </actionExtensions>
+</cep>
