@@ -24,21 +24,37 @@
  ****************************************************************************/
 
 
-#include "ActionTDM2I.h"
+#ifndef LECTUREPOL_H
+#define LECTUREPOL_H
 
-// include generated actions headers
-#include "Deplacement3D.h"
-#include "Affichage2D.h"
-#include "Superpositionimage3D.h"
+#include <Action.h>
 
-// --------------- getActions -------------------
-void ActionTDM2I::init() {
-    // Creating and registering the instance of Deplacement3D
-    // Creating and registering the instance of Affichage2D
-    // Creating and registering the instance of Superpositionimage3D
-    registerNewAction(Deplacement3D);
-    registerNewAction(Affichage2D);
-    registerNewAction(Superpositionimage3D);
-    registerNewAction(LecturePol);
-}
+#include <LecturePol.h>
+
+class Affichage2D : public camitk::Action {
+
+public: 
+
+    /// Default Constructor 
+    LecturePol(camitk::ActionExtension *);
+
+    /// Default Destructor
+    virtual ~LecturePol();
+
+public slots:
+    /** this method is automatically called when the action is triggered.
+      * Call getTargets() method to get the list of components to use.
+      * \note getTargets() is automatically filtered so that it only contains compatible components, 
+      * i.e., instances of Affichage2D (or a subclass).
+      */
+    virtual ApplyStatus apply();
+
+private: 
+    /// helper method to simplify the target component processing
+    virtual void process(Component3D *);
+
+
+}; 
+
+#endif // LECTUREPOL
 
