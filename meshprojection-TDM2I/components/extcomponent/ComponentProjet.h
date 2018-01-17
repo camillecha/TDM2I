@@ -30,6 +30,14 @@
 #include <QObject>
 
 #include <Component.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <stdio.h>
+#include <string>
+#include <sstream>
+
+
 
 class ComponentProjet : public camitk::Component {
 
@@ -44,6 +52,23 @@ public:
 
     /// do nothing to init the representation, as all representation are done in the sub-component
     virtual void initRepresentation() {};
+    
+    //Retourne les coordonnée de la ligne i (commence à 0) : double[6] : tx,ty,tz,rx,ry,rz
+	double* getCoordonnees(int i);
+    
+	//Retourne le temps à attendre avant de passer de la ligne i à i+1, en milliseconde
+	int getTime(int i);
+    
+	//Retourne la taille du tableau de coordonnée
+	int getSize();
+    
+private:
+    //Attribut
+	std::vector<std::vector<double>> coordonnee;
+	std::vector<std::string> temps;
+	//Fonction
+	//Transforme un string type hh:mm:ss:ms en int en ms
+	int* processTimer(std::string s);
 
 };
 
