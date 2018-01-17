@@ -7,6 +7,8 @@
 #include <ImageComponent.h>
 #include <Slice.h>
 #include <InteractiveViewer.h>
+#include "ComponentProjet.h"
+
 
 //--vtk
 #include <vtkPlane.h>
@@ -24,8 +26,9 @@ public:
     /// Default Destructor
     virtual ~Deplacement3D ();
     
+    
     /// method called when the action when the action is triggered (i.e. started)
-//    virtual QWidget* getWidget();
+    virtual QWidget* getWidget();
     
 public slots:
     /** this method is automatically called when the action is triggered.
@@ -35,6 +38,21 @@ public slots:
       */
     virtual ApplyStatus apply();
     
+    /// move tool to i line coordonnee in tagetPol
+    void moveTool();
+    
+private :
+    /// current target mesh component
+    camitk::MeshComponent *mesh;
+    
+    /// current image component
+    ComponentProjet *targetPol;
+    
+    /// this action widget (to simplify, it is just a label that gives information + a button)
+    QFrame* informationFrame;
+    
+    int actualLine;
+    QTimer *timer;
     
 }; 
 
