@@ -28,7 +28,6 @@
 #define SHOWMESHIN2DSLICE_H
 
 #include <Action.h>
-
 #include <MeshComponent.h>
 #include <ImageComponent.h>
 #include <Slice.h>
@@ -122,6 +121,29 @@ private:
     
     /// update the cutting plane position depending on the current slice and the given orientation
     void updateCuttingPlane(camitk::Slice::SliceOrientation);
+    
+    void deplacer();
+    
+//     void lireFichier();
+//     
+//     std::basic_ifstream<char> fichier;
+//     
+// 	std::vector<std::vector<double>> coordonnee;
+//     
+// 	std::vector<std::string> temps;
+//     
+//     //Retourne les coordonnées
+//     double* getCoordonnees(int i);
+// 	//Retourne le temps à attendre avant de passer de la ligne i à i+1, en milliseconde
+// 	int getTime(int i);
+// 	//Retourne la taille du tableau de coordonnée
+// 	int getSize();
+//     
+//     //Transforme un string type hh:mm:ss:ms en int en ms
+// 	int* processTimer(std::string s);
+//     
+//     int ligne = 0;
+
     
 }; 
 

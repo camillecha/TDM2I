@@ -44,6 +44,10 @@
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkGeometryFilter.h>
 #include <vtkVector.h>
+#include <QThread>
+
+#include <thread>
+#include <chrono>
 
 using namespace camitk;
 
@@ -72,6 +76,7 @@ ShowMeshIn2DSlice::ShowMeshIn2DSlice(ActionExtension * extension) : Action(exten
     mesh = nullptr;
     targetImage = nullptr;
     informationFrame = nullptr;
+    
 
 }
 
@@ -98,11 +103,12 @@ QWidget* ShowMeshIn2DSlice::getWidget() {
         inputComponent = it.previous();
         if (!inputMesh && dynamic_cast<MeshComponent *>(inputComponent)) {
             inputMesh = dynamic_cast<MeshComponent *>(inputComponent);
+            inputMesh->setTransformTranslation(50, 130, 90);
         }
         else {
             if (!inputImage && dynamic_cast<ImageComponent*>(inputComponent)) {
                 inputImage = dynamic_cast<ImageComponent*>(inputComponent);
-                inputImage->setTransformTranslation(-80,130,1160);
+               // inputImage->setTransformTranslation(-80, 130, 1160);
             }
         }
     }
@@ -129,7 +135,8 @@ QWidget* ShowMeshIn2DSlice::getWidget() {
         toggleShowContour();
     }
 
-    // create widget
+    
+        // create widget
     if (!informationFrame) {
         //-- the frame
         informationFrame = new QFrame();
@@ -169,6 +176,7 @@ Action::ApplyStatus ShowMeshIn2DSlice::apply() {
     foreach (vtkSmartPointer<vtkActor> contourActorIn2DViewer, contourActorIn2DViewerMap) {
         contourActorIn2DViewer->GetProperty()->SetLineWidth(property("Contour Line Width").toDouble());
     }
+    deplacer();
     Application::refresh();
 
     return SUCCESS;
@@ -262,11 +270,12 @@ void ShowMeshIn2DSlice::toggleShowContour() {
 
         //-- create the cutting planes
         cuttingPlaneMap.insert(Slice::AXIAL, getNewPlane(Slice::AXIAL));
-        // TODO
         cuttingPlaneMap.insert(Slice::SAGITTAL, getNewPlane(Slice::SAGITTAL));
+        cuttingPlaneMap.insert(Slice::CORONAL, getNewPlane(Slice::CORONAL));
+        // TODO
         
         // TODO
-        cuttingPlaneMap.insert(Slice::CORONAL, getNewPlane(Slice::CORONAL));
+        
 
         //-- set the position of the plane depending on the current slice
         updateCuttingPlane();
@@ -396,6 +405,25 @@ void ShowMeshIn2DSlice::toggleShowContour() {
 
 }
 
+void ShowMeshIn2DSlice::deplacer(){
+        
+        
+    int x = 0;
+    int y = 30;
+    int z = 0;
+    
+    double x1 = 0;
+    double y1 = 0;
+    double z1 = -42.12;
+    
+    mesh->translate(x,y,z);
+    mesh->rotate(x1,y1,z1);
+    
+}
+
+
+
+
 // --------------- updateCuttingPlane -------------------
 void ShowMeshIn2DSlice::updateCuttingPlane(Slice::SliceOrientation orientation) {
     // Note: Image origin convention indicates that the origin of the image is centered
@@ -421,16 +449,14 @@ void ShowMeshIn2DSlice::updateCuttingPlane(Slice::SliceOrientation orientation) 
     SingleImageComponent *orientationSlices = nullptr;
     switch(orientation) {
     case Slice::SAGITTAL:
-        // TODO
-    //default:
         orientationSlices = targetImage->getSagittalSlices();
         break;
+        // TODO
         
     case Slice::CORONAL:
-        // TODO
-    //default:
         orientationSlices = targetImage->getCoronalSlices();
-       break;
+        break;
+        // TODO
         
     case Slice::AXIAL:
     default:
@@ -454,11 +480,11 @@ void ShowMeshIn2DSlice::updateCuttingPlane() {
     if (isVisible) {
         // -- update all orientation planes
         updateCuttingPlane(Slice::AXIAL);
-        // TODO
         updateCuttingPlane(Slice::SAGITTAL);
+        updateCuttingPlane(Slice::CORONAL);
+        // TODO
         
         // TODO
-        updateCuttingPlane(Slice::CORONAL);
         
     }
 }
@@ -467,14 +493,14 @@ void ShowMeshIn2DSlice::updateCuttingPlane() {
 InteractiveViewer* ShowMeshIn2DSlice::getViewer(Slice::SliceOrientation orientation) {
     switch(orientation) {
     case Slice::SAGITTAL:
-        // TODO
         return InteractiveViewer::getSagittalViewer();
         break;
+        // TODO
         
     case Slice::CORONAL:
-        // TODO
         return InteractiveViewer::getCoronalViewer();
         break;
+        // TODO
         
     case Slice::AXIAL:
         return InteractiveViewer::getAxialViewer();
