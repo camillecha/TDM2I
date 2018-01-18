@@ -3,7 +3,6 @@
 #include <Property.h>
 #include <Application.h>
 #include <InteractiveViewer.h>
-#include "ComponentProjet.h"
 
 // Qt includes
 #include <QBoxLayout>
@@ -12,6 +11,7 @@
 #include <QListIterator>
 #include <QMessageBox>
 #include <QMap>
+#include <QTimer>
 
 // VTK includes
 #include <vtkCutter.h>
@@ -31,28 +31,13 @@ Deplacement3D::Deplacement3D(ActionExtension * extension) : Action(extension) {
     // Setting name, description and input component
     setName("Deplacement 3D");
     setFamily("TDM2I");
-    setDescription("Project the mesh in the 2D slice viewer");
+    setDescription("Move a mesh  following coordonnees give in a .pol file");
     setComponent("Component");
     
-    /*
-    double coordonnees[6]; //tableau contenant 6 doubles
-    int temps;
-    double tx, ty, tz, rx, ry, rz;
-    
-    for (int i = 0; i < getSize(); i++){
-        coordonnees = getCoordonnees(i);
-        tx = coordonnees[0];
-        ty = coordonnees[1];
-        tz = coordonnees[2];
-        rx = coordonnees[3];
-        ry = coordonnees[4];
-        rz = coordonnees[5];      
-        temps = getTime(i);
-        //Component->setTransformTranslationVTK(tx, ty, tz);
-       // Component->setTransformRotationVTK(rx, ry, rz);
-        sleep_for(nanoseconds(temps));
-    }
-    */
+    informationFrame = nullptr;
+    actualLine = 0;
+    timer = new QTimer();
+    connect(timer,SIGNAL(timeout()),this,SLOT(moveTool()));
 
 }
 
@@ -66,10 +51,10 @@ Deplacement3D::~Deplacement3D() {
 
 
 // --------------- getWidget -------------------
-/*
+
 QWidget* Deplacement3D::getWidget() {
     MeshComponent * inputMesh = nullptr;
-    MeshComponent * inputMesh2 = nullptr;
+    ComponentProjet * inputPol = nullptr;
 
     QListIterator<Component*> it(getTargets());
     // start from the end
@@ -77,38 +62,30 @@ QWidget* Deplacement3D::getWidget() {
 
     // update target data
     Component *inputComponent;
-    while (it.hasPrevious() || (!inputMesh2 && !inputComponent)) {
+    while (it.hasPrevious() || (!inputPol && !inputComponent)) {
         inputComponent = it.previous();
         if (!inputMesh && dynamic_cast<MeshComponent *>(inputComponent)) {
             inputMesh = dynamic_cast<MeshComponent *>(inputComponent);
         }
         else {
-            if (!inputMesh2 && dynamic_cast<MeshComponent*>(inputComponent)) {
-                inputMesh2 = dynamic_cast<MeshComponent*>(inputComponent);
+            if (!inputPol && dynamic_cast<ComponentProjet*>(inputComponent)) {
+                inputPol = dynamic_cast<ComponentProjet*>(inputComponent);
             }
         }
     }
 
-    if (!inputMesh || !inputMesh2) {
-        CAMITK_WARNING("ShowMeshIn2DSlice", "getWidget", "Cannot apply action: please select at least two meshes");
-        Application::showStatusBarMessage("ShowMeshIn2DSlice: cannot apply action: please select at least two meshes");
+    if (!inputMesh || !inputPol) {
+        CAMITK_WARNING("Déplacement 3D", "getWidget", "Cannot apply action: please select at least one mesh and one .pol");
+        Application::showStatusBarMessage("Déplacement 3D : cannot apply action: please select at least one mesh and one .pol");
         return nullptr;
     }
 
     // check if the current image is still the same
     if (inputMesh != mesh) {
-        targetMesh = inputMesh2;
-        if (mesh!=nullptr && isVisible) {
-            // hide
-            toggleShowContour();
-        }
+        targetPol = inputPol;
         // update mesh
         mesh = inputMesh;
-        // make sure to remove the contour of the renderer screen if the components die
-        connect(mesh, SIGNAL(destroyed()), this, SLOT(cleanUp()));
-        connect(targetMesh, SIGNAL(destroyed()), this, SLOT(cleanUp()));
-        // show the contour
-        toggleShowContour();
+        
     }
 
     // create widget
@@ -125,14 +102,8 @@ QWidget* Deplacement3D::getWidget() {
         informationFrameLayout->addWidget(Action::getWidget());
 
         QLabel* label = new QLabel();
-        label->setText(QString("Mesh: ") + mesh->getName() + QString(", Mesh2: ") + targetMesh->getName());
+        label->setText(QString("Mesh: ") + mesh->getName() + QString(", Image: ") + targetPol->getName());
         informationFrameLayout->addWidget(label);
-
-        QPushButton* toggleButton = new QPushButton("Toggle Contour");
-        informationFrameLayout->addWidget(toggleButton);
-        toggleButton->setCheckable(true);
-        toggleButton->setChecked(true);
-        QObject::connect(toggleButton, SIGNAL(toggled(bool)), this, SLOT(toggleShowContour()));
 
         //-- set the layout for the action widget
         informationFrame->setLayout(informationFrameLayout);
@@ -140,9 +111,37 @@ QWidget* Deplacement3D::getWidget() {
 
     return informationFrame;
 }
-*/
+
+void Deplacement3D::moveTool()
+{
+    double *coordonnees; //tableau contenant 6 doubles
+    double tx, ty, tz, rx, ry, rz;
+    if(actualLine<targetPol->getSize()){
+        coordonnees = targetPol->getCoordonnees(actualLine);
+        tx = coordonnees[0];
+        ty = coordonnees[1];
+        tz = coordonnees[2];
+        rx = coordonnees[3];
+        ry = coordonnees[4];
+        rz = coordonnees[5];      
+        mesh->setTransformTranslation(tx, ty, tz);
+        mesh->setTransformRotation(rx, ry, rz);
+        Application::refresh();
+        timer->start(targetPol->getTime(actualLine));
+        actualLine = actualLine+1;
+    }else{
+        timer->stop();
+        actualLine = 0;
+    }
+}
+
 
 Action::ApplyStatus Deplacement3D::apply()
 {
+    timer->start(0);
     return SUCCESS;
 }
+
+
+
+       
