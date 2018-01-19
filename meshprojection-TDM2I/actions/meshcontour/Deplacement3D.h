@@ -2,7 +2,7 @@
 #define DEPLACEMENT3D_H
 
 #include <Action.h>
-
+#include "ShowMeshIn2DSlice.h"
 #include <MeshComponent.h>
 #include <ImageComponent.h>
 #include <Slice.h>
