@@ -45,6 +45,8 @@ private :
     /// current target mesh component
     camitk::MeshComponent *mesh;
     
+    camitk::ImageComponent *targetImage;
+    
     /// current image component
     ComponentProjet *targetPol;
     

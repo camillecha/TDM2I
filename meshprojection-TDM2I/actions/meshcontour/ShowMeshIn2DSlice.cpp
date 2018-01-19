@@ -103,12 +103,12 @@ QWidget* ShowMeshIn2DSlice::getWidget() {
         inputComponent = it.previous();
         if (!inputMesh && dynamic_cast<MeshComponent *>(inputComponent)) {
             inputMesh = dynamic_cast<MeshComponent *>(inputComponent);
-            inputMesh->setTransformTranslation(50, 130, 90);
+            inputMesh->setTransformTranslation(0, 0, 0);
+            inputMesh->setTransformRotation(0,0,0);
         }
         else {
             if (!inputImage && dynamic_cast<ImageComponent*>(inputComponent)) {
                 inputImage = dynamic_cast<ImageComponent*>(inputComponent);
-               // inputImage->setTransformTranslation(-80, 130, 1160);
             }
         }
     }
@@ -176,7 +176,6 @@ Action::ApplyStatus ShowMeshIn2DSlice::apply() {
     foreach (vtkSmartPointer<vtkActor> contourActorIn2DViewer, contourActorIn2DViewerMap) {
         contourActorIn2DViewer->GetProperty()->SetLineWidth(property("Contour Line Width").toDouble());
     }
-    deplacer();
     Application::refresh();
 
     return SUCCESS;
@@ -405,21 +404,7 @@ void ShowMeshIn2DSlice::toggleShowContour() {
 
 }
 
-void ShowMeshIn2DSlice::deplacer(){
-        
-        
-    int x = 0;
-    int y = 30;
-    int z = 0;
-    
-    double x1 = 0;
-    double y1 = 0;
-    double z1 = -42.12;
-    
-    mesh->translate(x,y,z);
-    mesh->rotate(x1,y1,z1);
-    
-}
+
 
 
 
@@ -458,9 +443,11 @@ void ShowMeshIn2DSlice::updateCuttingPlane(Slice::SliceOrientation orientation) 
         break;
         // TODO
         
-    case Slice::AXIAL:
-    default:
+    case Slice::AXIAL:    
         orientationSlices = targetImage->getAxialSlices();
+        break;
+        
+    default:
         break;
     }
 
