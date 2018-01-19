@@ -3,6 +3,7 @@
 #include <Property.h>
 #include <Application.h>
 #include <InteractiveViewer.h>
+#include <MedicalImageViewer.h>
 
 // Qt includes
 #include <QBoxLayout>
@@ -36,9 +37,12 @@ Deplacement3D::Deplacement3D(ActionExtension * extension) : Action(extension) {
     
     informationFrame = nullptr;
     actualLine = 0;
+    
     timer = new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(moveTool()));
-    connect(timer,SIGNAL(timeout()),this,SLOT(updateCuttingPlane()));
+
+    
+    
 
 }
 
@@ -121,9 +125,11 @@ QWidget* Deplacement3D::getWidget() {
 
 void Deplacement3D::moveTool()
 {
+    timer->stop();
     double *coordonnees; //tableau contenant 6 doubles
     double *coorMesh;
     vtkSmartPointer<vtkTransform> personalTransform =    vtkSmartPointer<vtkTransform>::New();
+    ShowMeshIn2DSlice* shd = (ShowMeshIn2DSlice*)Application::getAction("Show Mesh in 2D Slice");
     
     
     
@@ -138,12 +144,13 @@ void Deplacement3D::moveTool()
         if(coorMesh[0] >= 0 && coorMesh[1] >= 0 && coorMesh[2] >= 0){
             targetImage->pixelPicked(coorMesh[0], coorMesh[1], coorMesh[2], nullptr);
         }
-        
-        Application::refresh();
+        shd->updateCuttingPlane();
+        //Application::refresh();
+        MedicalImageViewer::getInstance()->refresh();
         timer->start(targetPol->getTime(actualLine));
         actualLine = actualLine+1;
     }else{
-        timer->stop();
+        
         actualLine = 0;
     }
 }
@@ -151,8 +158,15 @@ void Deplacement3D::moveTool()
 
 Action::ApplyStatus Deplacement3D::apply()
 {
-    mesh->setParentFrame(targetImage);
-    timer->start(0);
+    if(!timer->isActive()){
+        mesh->setParentFrame(targetImage);
+        timer->start(0);
+    }else{
+        timer->stop();
+        
+    }
+    
+    
     return SUCCESS;
 }
 
