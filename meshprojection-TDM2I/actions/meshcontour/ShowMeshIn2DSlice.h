@@ -122,7 +122,6 @@ private:
     /// update the cutting plane position depending on the current slice and the given orientation
     void updateCuttingPlane(camitk::Slice::SliceOrientation);
     
-    void deplacer();
     
 
     
