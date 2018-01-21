@@ -49,8 +49,8 @@ Component(file, QFileInfo(file).baseName())
 		std::string timer;
 		std::vector<double> vec(6, -1);
 		while (getline(a_file, line)) {
-            std::istringstream iss(line);
-			iss >> timer >> vec[0] >> vec[1] >> vec[2] >> vec[3] >> vec[4] >> vec[5];
+            std::istringstream iss(line);//Transform String in stream for an easy process
+			iss >> timer >> vec[0] >> vec[1] >> vec[2] >> vec[3] >> vec[4] >> vec[5];//Recover part of iss separated by " " or "/n" and stocked them in vec
 			coordonnee.push_back(vec);
 			temps.push_back(timer);
 		}
@@ -58,13 +58,26 @@ Component(file, QFileInfo(file).baseName())
 		a_file.close();
 	}
 	
-	
+	//Get the last part of the path made by the file name
     QString name = file.split('/').back();
     
     // Set the properties with their default values
-    addProperty(new Property(tr("nomFichier"), name, tr("Nom du fichier"), ""));
-    addProperty(new Property(tr("timeStart"), QTime::fromString(QString::fromStdString(temps[0]),"h:m:s:z"), tr("Heure de début du tracking"), ""));
-    addProperty(new Property(tr("timeEnd"), QTime::fromString(QString::fromStdString(temps.back()),"hh:mm:ss:z"), tr("Heure de fin du tracking"), ""));
+    Property *hdeb = new Property(tr("timeStart"), QString::fromStdString(temps[0]), tr("Heure de début du tracking"), "");
+    Property *hend = new Property(tr("timeEnd"), QString::fromStdString(temps.back()), tr("Heure de fin du tracking"), "");
+    Property *pname = new Property(tr("nomFichier"), name, tr("Nom du fichier"), "");
+    Property* numbOfLine = new Property(tr("nombreCoordonnes"),getSize(),tr("Nombre de coordonnees dans le fichier"),"");
+    
+    //Set acces right for property
+    hdeb->setReadOnly(true);
+    hend->setReadOnly(true);
+    pname->setReadOnly(true);
+    numbOfLine->setReadOnly(true);
+    
+    //Add property to component
+    addProperty(pname);
+    addProperty(hdeb);
+    addProperty(hend);
+    addProperty(numbOfLine);
 
     // Add sub-components using the following code lines
     // Create a component (can be a component of your Component extension:
@@ -88,7 +101,6 @@ double* ComponentProjet::getCoordonnees(int i)
 }
 
 int ComponentProjet::getTime(int i) {
-	/*int resultat = processTimer(temps[i])[2];*/
 	int resultat = 0;
 	if (i < getSize() - 1) {
 		int *t1 = processTimer(temps[i]);
@@ -115,6 +127,7 @@ int* ComponentProjet::processTimer(std::string s) {
 	int i = 0;
 	std::istringstream iss(s);
 	std::string parsed;
+    //Get part of the string separated by ":" and stocked them as int in resultat
 	while(getline(iss, parsed, ':')) {
 		resultat[i] = stoi(parsed);
 		i++;

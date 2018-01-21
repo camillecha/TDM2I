@@ -53,7 +53,7 @@ public:
     /// do nothing to init the representation, as all representation are done in the sub-component
     virtual void initRepresentation() {};
     
-    //Retourne les coordonnée de la ligne i (commence à 0) : double[6] : tx,ty,tz,rx,ry,rz
+    //Retourne les coordonnée de la ligne i du fichier(commence à 0) : double[6] : tx,ty,tz,rx,ry,rz
 	double* getCoordonnees(int i);
     
 	//Retourne le temps à attendre avant de passer de la ligne i à i+1, en milliseconde
@@ -64,10 +64,10 @@ public:
     
 private:
     //Attribut
-	std::vector<std::vector<double>> coordonnee;
-	std::vector<std::string> temps;
+	std::vector<std::vector<double>> coordonnee;//Contient tout les coordonées trouvé dans le fichier
+	std::vector<std::string> temps;//Contient tout les temps trouvé dans le fichier
 	//Fonction
-	//Transforme un string type hh:mm:ss:ms en int en ms
+	//Transforme un string type hh:mm:ss:ms en int[4] : hh,mm,ss,ms 
 	int* processTimer(std::string s);
 
 };

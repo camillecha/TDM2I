@@ -33,3 +33,6 @@ Project Target=meshprojection-TDM2I,MeshProjection_global_install
 Use External Terminal=false
 Working Directory=file:///home/camitk/buildProjet
 isExecutable=true
+
+[Project]
+VersionControlSupport=kdevgit
