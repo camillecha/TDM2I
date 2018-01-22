@@ -35,15 +35,13 @@ Deplacement3D::Deplacement3D(ActionExtension * extension) : Action(extension) {
     setDescription("Move a mesh  following coordonnees give in a .pol file");
     setComponent("Component");
     
+    //Set default value of atribut
     informationFrame = nullptr;
     actualLine = 0;
-    
     timer = new QTimer();
+    
+    //Connect the signal timeout() of timer to moveTool()
     connect(timer,SIGNAL(timeout()),this,SLOT(moveTool()));
-
-    
-    
-
 }
 
 
@@ -83,7 +81,7 @@ QWidget* Deplacement3D::getWidget() {
         }
     }
 
-    if (!inputMesh || !inputPol || !inputImage) {
+    if (!inputMesh || !inputPol || !inputImage) {//If the three compoonent are not selected : display an error
         CAMITK_WARNING("Déplacement 3D", "getWidget", "Cannot apply action: please select at least one mesh and one .pol and one image");
         Application::showStatusBarMessage("Déplacement 3D : cannot apply action: please select at least one mesh and one .pol and one image");
         return nullptr;
@@ -94,7 +92,6 @@ QWidget* Deplacement3D::getWidget() {
         targetPol = inputPol;
         // update mesh
         mesh = inputMesh;
-        
         targetImage = inputImage;
         
     }
@@ -111,7 +108,8 @@ QWidget* Deplacement3D::getWidget() {
 
         // add the default action widget
         informationFrameLayout->addWidget(Action::getWidget());
-
+        
+        //Add a label to display information about the Action
         QLabel* label = new QLabel();
         label->setText(QString("Mesh: ") + mesh->getName() + QString(", Pol: ") + targetPol->getName() + QString(", Image: ") + targetImage->getName());
         informationFrameLayout->addWidget(label);
@@ -125,14 +123,15 @@ QWidget* Deplacement3D::getWidget() {
 
 void Deplacement3D::moveTool()
 {
-    timer->stop();
+    timer->stop();//Stop timer to be sure all action are done before moveTool() was called again
     double *coordonnees; //tableau contenant 6 doubles
     double *coorMesh;
+    
+    //Created a smartPointer to a vtkTransfomr (transform matrix) used to set the transformation applied on tool
     vtkSmartPointer<vtkTransform> personalTransform =    vtkSmartPointer<vtkTransform>::New();
     ShowMeshIn2DSlice* shd = (ShowMeshIn2DSlice*)Application::getAction("Show Mesh in 2D Slice");
     
-    
-    
+    //Set the transformation matrix usiing coordinate gived by .pol
     if(actualLine<targetPol->getSize()){
         coordonnees = targetPol->getCoordonnees(actualLine);
         personalTransform->RotateZ(coordonnees[5]);
@@ -140,17 +139,19 @@ void Deplacement3D::moveTool()
         personalTransform->RotateY(coordonnees[4]);
         personalTransform->Translate(coordonnees[0], coordonnees[1], coordonnees[2]);
         mesh->setTransform(personalTransform);
+        
+        //Get the position x,y,z of the tips of tool to set 2D slice display at the right position
         coorMesh = mesh->getTransformFromWorld()->GetPosition();
         if(coorMesh[0] >= 0 && coorMesh[1] >= 0 && coorMesh[2] >= 0){
             targetImage->pixelPicked(coorMesh[0], coorMesh[1], coorMesh[2], nullptr);
         }
         shd->updateCuttingPlane();
-        //Application::refresh();
-        MedicalImageViewer::getInstance()->refresh();
+        
+        //Restarted timer with the waiting time between actualLine and actualLine +1
         timer->start(targetPol->getTime(actualLine));
         actualLine = actualLine+1;
     }else{
-        
+        //When the file was fully read, set actualLine to 0 and let timer on stop
         actualLine = 0;
     }
 }
@@ -158,6 +159,7 @@ void Deplacement3D::moveTool()
 
 Action::ApplyStatus Deplacement3D::apply()
 {
+    //Used Apply button as a toggled button
     if(!timer->isActive()){
         mesh->setParentFrame(targetImage);
         timer->start(0);

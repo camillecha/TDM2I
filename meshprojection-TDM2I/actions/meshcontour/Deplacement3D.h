@@ -38,22 +38,26 @@ public slots:
       */
     virtual ApplyStatus apply();
     
-    /// move tool to i line coordonnee in tagetPol
+    /// move tool to actialLine coordinate in tagetPol
     void moveTool();
     
 private :
     /// current target mesh component
     camitk::MeshComponent *mesh;
     
+    ///current target image
     camitk::ImageComponent *targetImage;
     
-    /// current image component
+    /// current ComponentProjet component
     ComponentProjet *targetPol;
     
     /// this action widget (to simplify, it is just a label that gives information + a button)
     QFrame* informationFrame;
     
+    ///The line actualy used to set coordinate of the tools
     int actualLine;
+    
+    ///The timer that called mvoeTool when time between two coordinate have elapsed
     QTimer *timer;
     
 }; 

@@ -460,6 +460,7 @@ void ShowMeshIn2DSlice::updateCuttingPlane(Slice::SliceOrientation orientation) 
 
         //-- update the cutting plane
         cuttingPlaneMap.value(orientation)->SetOrigin(currentSlicePos);
+        orientationSlices->refresh();
     }
 }
 
